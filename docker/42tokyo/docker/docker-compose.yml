@@ -1,0 +1,29 @@
+# ============================================================
+#  docker-compose.yml — Ubuntu 22.04 開発環境
+# ============================================================
+
+services:
+  dev:
+    build: .
+    container_name: ubuntu-22.04-dev
+    hostname: jammy-dev
+
+    ports:
+      - "2222:22"       # SSH (ssh -p 2222 vagrant@localhost)
+
+    environment:
+      - DISPLAY=${DISPLAY}        # X11フォワーディング用
+      - TZ=Asia/Tokyo
+
+    volumes:
+      - ./workspace:/home/vagrant/workspace    # 作業ディレクトリ共有
+      - /tmp/.X11-unix:/tmp/.X11-unix          # X11ソケット共有 (GUI用)
+
+    # X11フォワーディングを使う場合はホストのXサーバを許可してください
+    # macOS: XQuartz インストール後 `xhost +localhost`
+    # Linux: `xhost +local:docker`
+
+    stdin_open: true
+    tty: true
+
+    restart: unless-stopped
